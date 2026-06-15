@@ -1,0 +1,20 @@
+:root {
+  --bg-primary: #020204;
+  --bg-surface: rgba(4, 4, 8, 0.4);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --accent-cyan: #32ff7e;
+  --accent-purple: #3ae374;
+  --text-primary: #e6e8eb;
+  --text-secondary: #8c9099;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Outfit', sans-serif; }
+.box { max-width: 900px; margin: 0 auto; padding: 50px 20px; }
+.header { text-align: center; margin-bottom: 40px; }
+.title { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; }
+.panel { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.btn { width: 100%; padding: 14px; font-weight: 700; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: #fff; transition: opacity 0.3s; }
+.btn:hover { opacity: 0.9; }
+.spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.1); border-left-color: var(--accent-cyan); border-radius: 50%; animation: spin 1s linear infinite; margin: 30px auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.report-pre { font-family: 'Courier New', Courier, monospace; background: #000; padding: 20px; border-radius: 8px; overflow-x: auto; color: #a6e3a1; margin-top: 30px; border: 1px solid var(--border-color); }
