@@ -2,9 +2,6 @@
 
 ## 1. Project Overview
 
-**Project Type:** Full-stack proof-of-concept (FastAPI backend + React frontend)
-**Status:** Development
-
 A speech-to-text service: a FastAPI backend exposes a transcription endpoint, and a React + Vite frontend provides a dashboard to try it.
 
 **Known limitation:** the current `WhisperService` implementation (`backend/app/services/transcribe_audio_speech.py`) returns a fixed, hardcoded transcript with simulated token timestamps — it does not yet run a real Whisper model. `requirements.txt` includes `transformers`, so wiring in an actual model is the natural next step.
