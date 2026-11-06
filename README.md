@@ -1,70 +1,99 @@
-# 📊 Audio-Speech-Transcriber (NLP)
+# Audio-Speech-Transcriber
 
-This is a premium, high-value full-stack decoupled Proof-of-Concept (POC) project that forms a key pillar of the **AI/ML Developer Master Portfolio Matrix**.
+## 1. Project Overview
 
----
+**Project Type:** Full-stack proof-of-concept (FastAPI backend + React frontend)
+**Status:** Development
 
-## 🔬 Core Concept & Algorithm Framework
-Converts audio waveforms into highly accurate text transcriptions with timestamps using OpenAI's Whisper model.
+A speech-to-text service: a FastAPI backend exposes a transcription endpoint, and a React + Vite frontend provides a dashboard to try it.
 
----
+**Known limitation:** the current `WhisperService` implementation (`backend/app/services/transcribe_audio_speech.py`) returns a fixed, hardcoded transcript with simulated token timestamps — it does not yet run a real Whisper model. `requirements.txt` includes `transformers`, so wiring in an actual model is the natural next step.
 
-## 🗂️ Decoupled Architecture & Directory Tree
-The project features a clean, professional separation of concerns between frontend client layers and backend microservices.
+## 2. Core Features
 
-```text
+- FastAPI backend with a versioned API (`app/api/v1`) and a transcription service layer
+- React 18 + Vite single-page frontend dashboard
+- Backend serves the built frontend as static files when `frontend/dist` exists, so the whole app runs as one process
+- `mcp_server.py`: a stdio JSON-RPC Model Context Protocol server exposing a `transcribe_audio_speech` tool so AI agents/clients can call the service directly
+- Multi-stage Dockerfile (Node build stage + Python runtime stage) for a single deployable image
+
+## 3. Tech Stack
+
+| Component | Technology |
+|---|---|
+| Backend | FastAPI, Uvicorn, Pydantic |
+| Declared (not yet wired) | Transformers, NumPy, Pandas, scikit-learn |
+| Frontend | React 18, Vite |
+| Packaging | Docker (multi-stage: `node:18-alpine` build + `python:3.10-slim` runtime) |
+
+## 4. Project Structure
+
+```
 Audio-Speech-Transcriber/
-├── frontend/               # React 18 + Vite Glassmorphic Client Workspace
-│   ├── src/
-│   │   ├── App.jsx         # Console Dashboard Interfaces
-│   │   └── index.css       # Custom Glassmorphism Theme Styling
-│   ├── vite.config.js      # Decoupled Vite Proxy Server Config
-│   └── package.json        # Frontend Node Dependencies
-│
-├── backend/                # Modular FastAPI Microservices Package
+├── frontend/           # React 18 + Vite client
+│   ├── src/App.jsx
+│   └── vite.config.js
+├── backend/
 │   ├── app/
-│   │   ├── core/           # Configuration management
-│   │   ├── api/v1/         # Endpoints & Router controllers
-│   │   └── services/       # Dynamic algorithm calculation models
-│   │
-│   ├── code/               # Native Cloud/Engine Inference Entrypoints
-│   ├── model/              # Serialized Model Weights & Mappings
-│   ├── metadata/           # Model Governance Audit Parameters
-│   ├── mcp_server.py       # Stdio JSON-RPC 2.0 Agentic MCP Interface
-│   ├── app.py              # Backend entrypoint runner
-│   └── requirements.txt    # Backend Python dependencies
-│
-├── Dockerfile              # Multi-Stage Build Configurations
-├── .dockerignore           # Container Exclusions Profile
-└── .gitignore              # Local Version Exclusions
+│   │   ├── core/       # configuration
+│   │   ├── api/v1/     # routes
+│   │   └── services/   # transcription logic
+│   ├── mcp_server.py   # MCP stdio server
+│   ├── app.py          # entrypoint used by the Docker image
+│   └── requirements.txt
+├── Dockerfile
+└── .dockerignore
 ```
 
----
+## 5. Prerequisites
 
-## 🤖 Native Agentic Integration (MCP Tool)
-This project features a native, zero-dependency **Model Context Protocol (MCP)** stdio server that allows AI agents to interact with the project programmatically:
+- Python 3.10+
+- Node.js 18+ (for frontend dev/build)
+- Docker (optional, for the packaged image)
 
-* **MCP Tool Name**: `transcribe_audio_speech`
-* **Description**: Convert input vocal audio data into text sequences with millisecond token timestamps.
-* **Interface Protocol**: Stdio JSON-RPC 2.0 standard.
+## 6. How to Run
 
----
+### Local development
 
-## 🚀 Execution & Deployment Instructions
+```bash
+cd backend
+pip install -r requirements.txt
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
 
-### Method A: Local execution
-1. Run uvicorn:
-   ```bash
-   cd backend && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000
-   ```
+In a separate terminal, for frontend dev with hot reload:
 
-### Method B: Containerized Execution (Docker)
-1. **Build the multi-stage image** from the project's root:
-   ```bash
-   docker build -t audio-speech-transcriber .
-   ```
-2. **Run the container**:
-   ```bash
-   docker run -p 8000:8000 audio-speech-transcriber
-   ```
-3. Access the visual dashboard at **`http://localhost:8000`**.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Docker
+
+```bash
+docker build -t audio-speech-transcriber .
+docker run -p 8000:8000 audio-speech-transcriber
+```
+
+Then open `http://localhost:8000`.
+
+## 7. API Documentation
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/v1/run` | Accepts an audio file upload and returns the (currently hardcoded) transcript with simulated timestamps. |
+| GET | `/` | Serves the built frontend, when present. |
+
+## 8. Environment Variables
+
+None required — the service has no external API keys or configurable settings in `app/core/config.py` beyond the fixed `API_V1_STR` prefix.
+
+## 9. Known Limitations
+
+- Transcription is a hardcoded stub, not a real Whisper model inference call.
+- No automated tests currently exist in the repository (`backend/test/` is present but empty).
+
+## License
+
+No LICENSE file is present in this repository.
